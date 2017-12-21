@@ -75,6 +75,7 @@ int main (int argc, char *argv[]) {
 					}
 				}
 				close(socketClient);
+				printf("Communication fermée\n");
 			}
 		} else {
 			perror("Erreur de accept\n");	

@@ -12,7 +12,7 @@ int main (int argc, char *argv[]) {
 	struct sockaddr_in serveur;
 	serveur.sin_family = AF_INET;
 	serveur.sin_port = htons(7777);	
-	serveur.sin_addr.s_addr = inet_addr("10.100.13.22");
+	serveur.sin_addr.s_addr = inet_addr(argv[1]);
 	int s = socket(AF_INET,SOCK_STREAM,0);
 	char plaqueImmatriculation[7];
 	char categorie = 'A';
@@ -37,15 +37,15 @@ int main (int argc, char *argv[]) {
 	if (s < 0) {
 		perror("Erreur de socket");
 	} else {
-		printf("Connecté au serveur\n");
 		if (connect(s,(struct sockaddr*) &serveur,sizeof(serveur)) < 0) {
 			perror("Erreur de connexion");
 		}else {
-			printf("Salut");
-			write(s,plaqueImmatriculation,8);
+			printf("Connecté au serveur\n");
+			/*write(s,plaqueImmatriculation,8);
 			write(s,categorie,1);
 			write(s,&duree,sizeof(int));
-			printf("Message envoyé");
+			printf("Message envoyé");*/
 		}
 	}
+	close(s);
 }
