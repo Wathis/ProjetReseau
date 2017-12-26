@@ -1,11 +1,3 @@
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <string.h>
 #include "serveur.h"
 
 int main (int argc, char *argv[]) {
@@ -16,11 +8,13 @@ int main (int argc, char *argv[]) {
 	serveur.sin_port = htons(SERVEUR_PORT);
 	//On recupere l'addresse du serveur donnée en parametres
 	if (argc > 1) { 
-		serveur.sin_addr.s_addr = inet_addr(argv[1]);
+		//On stocke l'addresse du serveur
+    	inet_aton(argv[1], &serveur.sin_addr);
 	} else {
 		perror("Vous devez entrer l'addresse du serveur");
 		exit(1);
 	}
+	//On regarde si il n'y a pas d'erreur dans le bind
 	if (bind(socketFd,(struct sockaddr *) &serveur, sizeof(serveur)) < 0) {
 		perror("Erreur dans le bind");
 	} else {
@@ -31,6 +25,7 @@ int main (int argc, char *argv[]) {
 	} else {
 		printf("Ecoute sur %d... \n",SERVEUR_PORT);
    }
+    
 
 	struct sockaddr_in client;
 	client.sin_family = AF_INET;
@@ -50,7 +45,7 @@ int main (int argc, char *argv[]) {
 	float prixForfait;
 	float prixHorsForfait;
 
-	while (1) {
+	//while (1) {
 		socketClient = accept(socketFd, (struct sockaddr *)&client, &add_client);
 		printf("Tentative de connexion ...\n");
 		if (socketClient > 0 ) {
@@ -62,17 +57,26 @@ int main (int argc, char *argv[]) {
 				read(socketClient,plaqueImmatriculation,8);
 				read(socketClient,&duree,sizeof(int));
 				printf("/INFO\\ Demande de la plaque : %s categorie : %c pour duree : %d\n\n",plaqueImmatriculation,categorie, duree);
-				if (categorie - 'A' > NBR_FORFAITS) {
+				if (categorie - 'A' < NBR_FORFAITS) {
 					prixForfait = prixForfaits[categorie - 'A'];
 					prixHorsForfait = prixHorsForfaits[categorie - 'A'];
+					printf("Envoie de %f  %f \n",prixForfait,prixHorsForfait);
+					//On envoie la reponse au client, avec le prix forfait et prix hors forfait correspondant a sa catégorie de vehicule
 					if (nbPlacesParCategories[categorie - 'A'] > 0) {
+						// "O" permet de dire que oui on a de la place
 						write(socketClient,"O",1);
-						write(socketClient,argv[1],8);
-						write(socketClient,&duree,sizeof(int));
+						// On donne le nom du serveur au client ( son addresse au format integer ) 
+						write(socketClient,&serveur.sin_addr,sizeof(serveur.sin_addr));
+						//On fait la suite du protocole
+						write(socketClient,&prixForfait,sizeof(float));
+						write(socketClient,&prixHorsForfait,sizeof(float));
 					} else {
 						//Il n'y a plus de place pour la categorie demandée
 						write(socketClient,"N",1);
 					}
+				} else {
+					//Le forfait n'existe pas 
+					write(socketClient,"N",1);
 				}
 				close(socketClient);
 				printf("Communication fermée\n");
@@ -80,7 +84,7 @@ int main (int argc, char *argv[]) {
 		} else {
 			perror("Erreur de accept\n");	
 		}
-	}
+	//}
 	close(socketFd);
 	
 }
