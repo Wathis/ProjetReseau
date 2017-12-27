@@ -1,9 +1,0 @@
-Exception: STATUS_ACCESS_VIOLATION at eip=61138EE1
-eax=00000061 ebx=00000061 ecx=00000000 edx=00000061 esi=00000000 edi=00000061
-ebp=0061C978 esp=0061C974 program=C:\Users\Etienne\Documents\programmation\ProjetReseau\borne.exe, pid 6940, thread main
-cs=0023 ds=002B es=002B fs=0053 gs=002B ss=002B
-Stack trace:
-Frame     Function  Args
-0061C978  61138EE1 (00000061, 0061CA24, 0040307D, 00000001)
-0061CA9C  61145416 (00000000, 0061CA98, 0061CA94, 0061CC68)
-End of stack trace
