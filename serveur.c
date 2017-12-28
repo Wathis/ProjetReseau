@@ -1,5 +1,6 @@
 #include "serveur.h"
 
+
 int main (int argc, char *argv[]) {
 
 	int socketFd = socket(AF_INET, SOCK_STREAM,0);
@@ -24,25 +25,23 @@ int main (int argc, char *argv[]) {
 		perror("Erreur dans le listen");
 	} else {
 		printf("Ecoute sur %d... \n",SERVEUR_PORT);
-   }
-    
+    }
 
 	struct sockaddr_in client;
 	client.sin_family = AF_INET;
 	unsigned int add_client = sizeof(client);
 
-	//index 0 correspond au forfait A, 1 correspond forfait B
-	float prixForfaits[] = {2,3};
-	float prixHorsForfaits[] = {5,8};
-	int nbPlacesParCategories[] = {2,2};
-
-	int NBR_FORFAITS = sizeof(prixForfaits) / sizeof(prixForfaits[0]);
+	//On stocke une voiture de categorie A
+	strcpy(voituresPresentes[0].plaque,"AAABBCC\0");
+	voituresPresentes[0].timeStampArrivee = time(0); // Timestamp actuel
+	voituresPresentes[0].categorie = 'A';
 
 	char plaqueImmatriculation[8];
 	char categorie;
 	char menu;
 	int duree ;
 	int socketClient;
+	float dureeMaxForfait;
 	float prixForfait;
 	float prixHorsForfait;
 
@@ -56,34 +55,69 @@ int main (int argc, char *argv[]) {
 				printf("-------------------------------------\n");
 				read(socketClient,&menu, 1);
 				printf("%c\n", menu);
-				if (menu == '1')
-				{
+				//Si menu == 1 c'est que la borne veut une proposition de contrat de stationnement pour une voiture donnée 
+				if (menu == '1') {
 					read(socketClient,&categorie,1);
 					read(socketClient,plaqueImmatriculation,8);
 					read(socketClient,&duree,sizeof(int));
 					printf("/INFO\\ Demande de la plaque : %s categorie : %c pour duree : %d\n\n",plaqueImmatriculation,categorie, duree);
 					if (categorie - 'A' < NBR_FORFAITS) {
-					prixForfait = prixForfaits[categorie - 'A'];
-					prixHorsForfait = prixHorsForfaits[categorie - 'A'];
-					printf("Envoie de %f  %f \n",prixForfait,prixHorsForfait);
-					//On envoie la reponse au client, avec le prix forfait et prix hors forfait correspondant a sa catégorie de vehicule
-					if (nbPlacesParCategories[categorie - 'A'] > 0) {
-						// "O" permet de dire que oui on a de la place
-						write(socketClient,"O",1);
-						// On donne le nom du serveur au client ( son addresse au format integer ) 
-						write(socketClient,&serveur.sin_addr,sizeof(serveur.sin_addr));
-						//On fait la suite du protocole
-						write(socketClient,&prixForfait,sizeof(float));
-						write(socketClient,&prixHorsForfait,sizeof(float));
+						dureeMaxForfait = dureeMaxForfaits[categorie - 'A'];
+						prixForfait = prixForfaits[categorie - 'A'];
+						prixHorsForfait = prixHorsForfaits[categorie - 'A'];
+						printf("Envoie de %f  %f \n",prixForfait,prixHorsForfait);
+						//On envoie la reponse au client, avec le prix forfait et prix hors forfait correspondant a sa catégorie de vehicule
+						if (nbPlacesLibresParCategories[categorie - 'A'] > 0) {
+							// "O" permet de dire que oui on a de la place
+							write(socketClient,"O",1);
+							// On donne le nom du serveur au client ( son addresse au format integer ) 
+							write(socketClient,&serveur.sin_addr,sizeof(serveur.sin_addr));
+							//On fait la suite du protocole
+							write(socketClient,&dureeMaxForfait,sizeof(float));
+							write(socketClient,&prixForfait,sizeof(float));
+							write(socketClient,&prixHorsForfait,sizeof(float));
+						} else {
+							//Il n'y a plus de place pour la categorie demandée
+							write(socketClient,"N",1);
+						}
 					} else {
-						//Il n'y a plus de place pour la categorie demandée
+						//Le forfait n'existe pas 
 						write(socketClient,"N",1);
 					}
-				}
-				
 				} else {
-					//Le forfait n'existe pas 
-					write(socketClient,"N",1);
+					//Sinon c'est qu'elle veut connaitre un état du coût de stationnement pour une voiture donnée
+					read(socketClient,plaqueImmatriculation,8);
+
+					//On parcours les voitures presentes pour voir si celle demandée est presente
+					int i;
+					for (i = 0 ; i < NBR_MAX_PLACE ; i++) {
+						if (voituresPresentes[i].plaque == plaqueImmatriculation) {
+							break;
+						}
+					}
+					//Si i == NBR_MAX_PLACE - 1 C'est que l'on a pas trouvé la voiture
+					if (i == NBR_MAX_PLACE - 1) {
+						//On renvoie 'N' au client pour dire que on ne l'a pas trouvé
+						write(socketClient,"N",sizeof(char));
+					} else { //Sinon c'est qu'elle est bien dans le parking, on peut alors renvoyer les informations au client
+						//On renvoie 'O' au client pour dire que l'on a sa voiture
+						write(socketClient,"O",sizeof(char));
+						dureeMaxForfait = dureeMaxForfaits[categorie - 'A'];
+						prixForfait = prixForfaits[categorie - 'A'];
+						prixHorsForfait = prixHorsForfaits[categorie - 'A'];
+						// On donne le nom du serveur au client ( son addresse ) 
+						write(socketClient,&serveur.sin_addr,sizeof(serveur.sin_addr));
+
+						//On extrait la durée a laquelle est resté la voiture dans le parking
+						int dureeVoiture = voituresPresentes[i].timeStampArrivee - time(0);
+						float dureeVoitureHeures = dureeVoiture / 3600; //On repasse le timestamp secondes en heures
+
+						//On fait la suite du protocole
+						write(socketClient,&dureeVoitureHeures,sizeof(float));
+						write(socketClient,&dureeMaxForfait,sizeof(float));
+						write(socketClient,&prixForfait,sizeof(float));
+						write(socketClient,&prixHorsForfait,sizeof(float));
+					}
 				}
 				close(socketClient);
 				printf("Communication fermée\n");

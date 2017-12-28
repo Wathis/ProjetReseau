@@ -43,8 +43,18 @@ int main (int argc, char *argv[]) {
 				
 			} while (repon != '1' &&  repon != '2');
 	
+
+			//On envoie au serveur si on veut payer ou voir les tarifs
+			write(s, &repon,1);
+
+			char reponse;
+			struct sockaddr_in serveurReponse;
+			char *ipServeurReponse;
+			float dureeMaxForfait;
+			float prixForfait;
+			float prixHorsForfait;
+
 			if(repon == '1') {
-				
 				viderBuffer();
 				//On saisi les informations du client 
 				printf("catégorie : ");
@@ -56,9 +66,6 @@ int main (int argc, char *argv[]) {
 				printf("duree : ");
 				scanf("%d", &duree);
 				viderBuffer();
-
-				//On envoie au serveur si on veut payer ou voir les tarifs
-				write(s, &repon,1);
 				
 				//On envoie les données saisies par l'utilisateur au serveur
 				write(s,&categorie,1);
@@ -67,11 +74,6 @@ int main (int argc, char *argv[]) {
 				write(s,plaqueImmatriculation,8);
 				write(s,&duree,sizeof(int));
 				printf("En attente de réponse ...\n");
-				char reponse;
-				struct sockaddr_in serveurReponse;
-				char *ipServeurReponse;
-				float prixForfait;
-				float prixHorsForfait;
 				read(s,&reponse,1);
 				//Si le serveur repond par "O", c'est qu'il peut accueillir la voiture
 				if (reponse == 'O') {
@@ -80,21 +82,35 @@ int main (int argc, char *argv[]) {
 					// On convertit son nom ( de integerer à String pour qu'il soit comprehensible par l'utilisateur )
 					ipServeurReponse = inet_ntoa(serveurReponse.sin_addr);
 					//On fais la suite du protocole
+					read(s,&dureeMaxForfait, sizeof(float));
 					read(s,&prixForfait,sizeof(float));
 					read(s,&prixHorsForfait,sizeof(float));
-					printf("Le serveur %s a de la place pour la categorie %c.\n\tPrix forfait : %f\n\tPrix hors forfait : %f\n",ipServeurReponse,categorie,prixForfait,prixHorsForfait);
+					printf("Le serveur %s a de la place pour la categorie %c.\n\tDuree max forfait : %f\n\tPrix forfait : %f\n\tPrix hors forfait : %f\n",ipServeurReponse,categorie,dureeMaxForfait,prixForfait,prixHorsForfait);
 				} else { // Sinon il repond par "N" 	
 					printf("Ce serveur ne peut pas accueillir la voiture");
 				}
-
+			} else {
+				printf("plaque d'immatriculation : ");
+				scanf("%s", plaqueImmatriculation);	
+				//On met le dernier caratere \0 dans la chaine pour qu'il soit bien interprété
+				plaqueImmatriculation[7] = '\0';
+				write(s,plaqueImmatriculation,8);
+				char detientVoiture;
+				read(s,&detientVoiture,sizeof(char));
+				if (detientVoiture == 'O') {
+					//On lis le nom du serveur ( son addresse )
+					read(s,&serveurReponse.sin_addr,sizeof(serveurReponse.sin_addr));
+					// On convertit son nom ( de integerer à String pour qu'il soit comprehensible par l'utilisateur )
+					ipServeurReponse = inet_ntoa(serveurReponse.sin_addr);
+					//On fait la suite du protocole
+					float dureeVoitureHeures;
+					read(s,&dureeVoitureHeures,sizeof(float));
+					read(s,&dureeMaxForfait, sizeof(float));
+					read(s,&prixForfait,sizeof(float));
+					read(s,&prixHorsForfait,sizeof(float));
+					printf("[%s] Duree : %f, Duree max forfait : %f, Prix forfait : %f, Prix Hors Forfait : %f",ipServeurReponse,dureeVoitureHeures,dureeMaxForfait,prixForfait,prixHorsForfait);
+				}
 			}
-			else {
-
-			}
-
-
-
-			
 		}
 	}
 	close(s);
