@@ -22,39 +22,11 @@ int main (int argc, char *argv[]) {
 	int duree = 12;
 	char repon;
 
-	do {
-		printf("1 pour tarif\n2 pour payer\n");
-		scanf("%c", &repon);
-	} while (repon != '1' &&  repon != '2');
-	
-	if(repon == '1') {
-		viderBuffer();
-
-	//On saisi les informations du client 
-	printf("catégorie : ");
-	scanf("%c", &categorie);
-	printf("plaque d'immatriculation : ");
-	scanf("%s", plaqueImmatriculation);	
-	printf("duree : ");
-	scanf("%d", &duree);
-
-	}
-	else {
-
-	}
-	
-	
-	
-	
 
 	// strcpy(plaqueImmatriculation,"AAABBCC\0");
 	// categorie = 'B';
 	// duree = 2;
 	
-
-	printf("%s \n", plaqueImmatriculation);
-	printf("%c \n", categorie);
-	printf("%d \n", duree);
 	// test de la validité de la socket
 	if (s < 0) {
 		perror("Erreur de socket");
@@ -68,22 +40,26 @@ int main (int argc, char *argv[]) {
 			do {
 				printf("1 pour tarif\n2 pour payer\n");
 				scanf("%c", &repon);
+				
 			} while (repon != '1' &&  repon != '2');
 	
 			if(repon == '1') {
+				
 				viderBuffer();
-
 				//On saisi les informations du client 
 				printf("catégorie : ");
 				scanf("%c", &categorie);
+				viderBuffer();
 				printf("plaque d'immatriculation : ");
 				scanf("%s", plaqueImmatriculation);	
+				viderBuffer();
 				printf("duree : ");
 				scanf("%d", &duree);
-
+				viderBuffer();
 
 				//On envoie au serveur si on veut payer ou voir les tarifs
-				//write(s, &repon);
+				write(s, &repon,1);
+				
 				//On envoie les données saisies par l'utilisateur au serveur
 				write(s,&categorie,1);
 				//On met le dernier caratere \0 dans la chaine pour qu'il soit bien interprété

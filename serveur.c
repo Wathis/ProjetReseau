@@ -40,6 +40,7 @@ int main (int argc, char *argv[]) {
 
 	char plaqueImmatriculation[8];
 	char categorie;
+	char menu;
 	int duree ;
 	int socketClient;
 	float prixForfait;
@@ -53,11 +54,15 @@ int main (int argc, char *argv[]) {
 				printf("-------------------------------------\n");
 				printf("/!\\ Demande connexion client accepté\n");
 				printf("-------------------------------------\n");
-				read(socketClient,&categorie,1);
-				read(socketClient,plaqueImmatriculation,8);
-				read(socketClient,&duree,sizeof(int));
-				printf("/INFO\\ Demande de la plaque : %s categorie : %c pour duree : %d\n\n",plaqueImmatriculation,categorie, duree);
-				if (categorie - 'A' < NBR_FORFAITS) {
+				read(socketClient,&menu, 1);
+				printf("%c\n", menu);
+				if (menu == '1')
+				{
+					read(socketClient,&categorie,1);
+					read(socketClient,plaqueImmatriculation,8);
+					read(socketClient,&duree,sizeof(int));
+					printf("/INFO\\ Demande de la plaque : %s categorie : %c pour duree : %d\n\n",plaqueImmatriculation,categorie, duree);
+					if (categorie - 'A' < NBR_FORFAITS) {
 					prixForfait = prixForfaits[categorie - 'A'];
 					prixHorsForfait = prixHorsForfaits[categorie - 'A'];
 					printf("Envoie de %f  %f \n",prixForfait,prixHorsForfait);
@@ -74,6 +79,8 @@ int main (int argc, char *argv[]) {
 						//Il n'y a plus de place pour la categorie demandée
 						write(socketClient,"N",1);
 					}
+				}
+				
 				} else {
 					//Le forfait n'existe pas 
 					write(socketClient,"N",1);
