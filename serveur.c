@@ -39,7 +39,6 @@ int main (int argc, char *argv[]) {
 	char plaqueImmatriculation[8];
 	char categorie;
 	int menu;
-	int duree ;
 	int socketClient;
 	float dureeMaxForfait;
 	float prixForfait;
@@ -58,8 +57,7 @@ int main (int argc, char *argv[]) {
 				if (menu == 1) {
 					read(socketClient,&categorie,1);
 					read(socketClient,plaqueImmatriculation,8);
-					read(socketClient,&duree,sizeof(int));
-					printf("/INFO\\ Demande de la plaque : %s categorie : %c pour duree : %d\n\n",plaqueImmatriculation,categorie, duree);
+					printf("/INFO\\ Demande de la plaque : %s categorie : %c \n\n",plaqueImmatriculation,categorie);
 					if (categorie - 'A' < NBR_FORFAITS) {
 						dureeMaxForfait = dureeMaxForfaits[categorie - 'A'];
 						prixForfait = prixForfaits[categorie - 'A'];

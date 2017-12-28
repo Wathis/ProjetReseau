@@ -9,6 +9,17 @@ void viderBuffer()
     }
 }
 
+float price(float dureeMaxForfait, float dureeVoitureHeures, float prixForfait, float prixHorsForfait){
+	float price;
+	if (dureeVoitureHeures - dureeMaxForfait < 0)
+	{
+		price = dureeVoitureHeures*prixForfait;
+	} else {
+		price = dureeMaxForfait*prixForfait + (dureeVoitureHeures - dureeMaxForfait)*prixHorsForfait;
+	}	
+	return price;
+}
+
 int main (int argc, char *argv[]) {
 	int connectionInfo; 
 	struct sockaddr_in serveur;
@@ -21,7 +32,7 @@ int main (int argc, char *argv[]) {
 	char categorie = 'A';
 	int duree = 12;
 	char repon;
-	float price;
+	
 
 
 	// strcpy(plaqueImmatriculation,"AAABBCC\0");
@@ -75,7 +86,6 @@ int main (int argc, char *argv[]) {
 				//On met le dernier caratere \0 dans la chaine pour qu'il soit bien interprété
 				plaqueImmatriculation[7] = '\0';
 				write(s,plaqueImmatriculation,8);
-				write(s,&duree,sizeof(int));
 				printf("En attente de réponse ...\n");
 				read(s,&reponse,1);
 				//Si le serveur repond par "O", c'est qu'il peut accueillir la voiture
@@ -89,6 +99,7 @@ int main (int argc, char *argv[]) {
 					read(s,&prixForfait,sizeof(float));
 					read(s,&prixHorsForfait,sizeof(float));
 					printf("Le serveur %s a de la place pour la categorie %c.\n\tDuree max forfait : %f\n\tPrix forfait : %f\n\tPrix hors forfait : %f\n",ipServeurReponse,categorie,dureeMaxForfait,prixForfait,prixHorsForfait);
+					printf("Le prix sera de : %f\n", price(dureeMaxForfait, duree, prixForfait, prixHorsForfait));
 				} else if (reponse == 'N') { // Si il repond par "N", il n'y a plus de place	
 					printf("Ce serveur ne peut pas accueillir la voiture");
 				} else { // Sinon il repond par "E", cela veut dire que la catégorie n'existe pas
@@ -114,15 +125,10 @@ int main (int argc, char *argv[]) {
 					read(s,&prixForfait,sizeof(float));
 					read(s,&prixHorsForfait,sizeof(float));
 
-					if (dureeVoitureHeures - dureeMaxForfait < 0)
-					{
-						price = dureeVoitureHeures*prixForfait;
-					} else {
-						price = dureeMaxForfait*prixForfait + (dureeVoitureHeures - dureeMaxForfait)*prixHorsForfait;
-					}
+					
 
 					printf("[%s] Duree : %f, Duree max forfait : %f, Prix forfait : %f, Prix Hors Forfait : %f\n",ipServeurReponse,dureeVoitureHeures,dureeMaxForfait,prixForfait,prixHorsForfait);
-					printf("Vous devez payer : %f €\n", price);
+					printf("vous devez payer : %f\n", price(dureeMaxForfait, duree, prixForfait, prixHorsForfait));
 				}
 			}
 		}
