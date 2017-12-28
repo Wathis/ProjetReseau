@@ -1,2 +1,2 @@
-#define NBR_SERVEURS 1
+#define NB_SERVEURS 1
 char *SERVEURS_IP[] = {"192.168.0.38\0"}; 

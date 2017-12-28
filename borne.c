@@ -47,7 +47,7 @@ int main (int argc, char *argv[]) {
 		int reponInteger = repon - '0';
 
 		//On boucle sur tous les serveurs
-		for (int i = 0 ; i < NBR_SERVEURS; i++) {
+		for (int i = 0 ; i < NB_SERVEURS; i++) {
 			serveur.sin_addr.s_addr = inet_addr(SERVEURS_IP[i]);
 			if (fork() == 0) { //On créé un fils pour gérer un serveur
 				// Connexion au serveur
