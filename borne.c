@@ -21,6 +21,7 @@ int main (int argc, char *argv[]) {
 	char categorie = 'A';
 	int duree = 12;
 	char repon;
+	float price;
 
 
 	// strcpy(plaqueImmatriculation,"AAABBCC\0");
@@ -108,7 +109,15 @@ int main (int argc, char *argv[]) {
 					read(s,&dureeMaxForfait, sizeof(float));
 					read(s,&prixForfait,sizeof(float));
 					read(s,&prixHorsForfait,sizeof(float));
+					if (dureeVoitureHeures - dureeMaxForfait < 0)
+					{
+						price = dureeVoitureHeures*prixForfait;
+					} else {
+						price = dureeMaxForfait*prixForfait + (dureeVoitureHeures - dureeMaxForfait)*prixHorsForfait;
+					}
+
 					printf("[%s] Duree : %f, Duree max forfait : %f, Prix forfait : %f, Prix Hors Forfait : %f\n",ipServeurReponse,dureeVoitureHeures,dureeMaxForfait,prixForfait,prixHorsForfait);
+					printf("Vous devez payer : %f\n", price);
 				}
 			}
 		}
