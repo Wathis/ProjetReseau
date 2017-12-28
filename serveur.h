@@ -15,7 +15,7 @@ struct Voiture {
 	//Plaque d'immatriculation du vehicule
 	char plaque[8];
 	//Time stamp de l'heure d'arrivée du vehicule
-	int timeStampArrivee;
+	long int timeStampArrivee;
 	//Categorie 
 	char categorie;
 };

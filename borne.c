@@ -108,7 +108,7 @@ int main (int argc, char *argv[]) {
 					read(s,&dureeMaxForfait, sizeof(float));
 					read(s,&prixForfait,sizeof(float));
 					read(s,&prixHorsForfait,sizeof(float));
-					printf("[%s] Duree : %f, Duree max forfait : %f, Prix forfait : %f, Prix Hors Forfait : %f",ipServeurReponse,dureeVoitureHeures,dureeMaxForfait,prixForfait,prixHorsForfait);
+					printf("[%s] Duree : %f, Duree max forfait : %f, Prix forfait : %f, Prix Hors Forfait : %f\n",ipServeurReponse,dureeVoitureHeures,dureeMaxForfait,prixForfait,prixHorsForfait);
 				}
 			}
 		}
