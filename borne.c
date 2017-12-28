@@ -1,32 +1,5 @@
 #include "borne.h"
 
-void viderBuffer()
-{
-    int c = 0;
-    while (c != '\n' && c != EOF)
-    {
-        c = getchar();
-    }
-}
-
-float price(float dureeMaxForfait, float dureeVoitureHeures, float prixForfait, float prixHorsForfait){
-	float price;
-	if (dureeVoitureHeures - dureeMaxForfait < 0)
-	{
-		price = dureeVoitureHeures*prixForfait;
-	} else {
-		price = dureeMaxForfait*prixForfait + (dureeVoitureHeures - dureeMaxForfait)*prixHorsForfait;
-	}	
-	return price;
-}
-
-void printLines(int number) {
-	for (int i = 0 ; i < number ; i++) {
-		printf("-");
-	}
-	printf("\n");
-}
-
 int main (int argc, char *argv[]) {
 
 	char plaqueImmatriculation[8];
@@ -136,4 +109,31 @@ int main (int argc, char *argv[]) {
 			close(s);
 		}
 	}
+}
+
+void viderBuffer()
+{
+    int c = 0;
+    while (c != '\n' && c != EOF)
+    {
+        c = getchar();
+    }
+}
+
+float price(float dureeMaxForfait, float dureeVoitureHeures, float prixForfait, float prixHorsForfait){
+	float price;
+	if (dureeVoitureHeures - dureeMaxForfait < 0)
+	{
+		price = dureeVoitureHeures*prixForfait;
+	} else {
+		price = dureeMaxForfait*prixForfait + (dureeVoitureHeures - dureeMaxForfait)*prixHorsForfait;
+	}	
+	return price;
+}
+
+void printLines(int number) {
+	for (int i = 0 ; i < number ; i++) {
+		printf("-");
+	}
+	printf("\n");
 }
