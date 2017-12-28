@@ -81,7 +81,7 @@ int main (int argc, char *argv[]) {
 						}
 					} else {
 						//Le forfait n'existe pas 
-						write(socketClient,"N",1);
+						write(socketClient,"E",1);
 					}
 				} else {
 					//Sinon c'est qu'elle veut connaitre un état du coût de stationnement pour une voiture donnée

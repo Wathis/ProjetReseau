@@ -89,8 +89,10 @@ int main (int argc, char *argv[]) {
 					read(s,&prixForfait,sizeof(float));
 					read(s,&prixHorsForfait,sizeof(float));
 					printf("Le serveur %s a de la place pour la categorie %c.\n\tDuree max forfait : %f\n\tPrix forfait : %f\n\tPrix hors forfait : %f\n",ipServeurReponse,categorie,dureeMaxForfait,prixForfait,prixHorsForfait);
-				} else { // Sinon il repond par "N" 	
+				} else if (reponse == 'N') { // Si il repond par "N", il n'y a plus de place	
 					printf("Ce serveur ne peut pas accueillir la voiture");
+				} else { // Sinon il repond par "E", cela veut dire que la catégorie n'existe pas
+					
 				}
 			} else {
 				printf("plaque d'immatriculation : ");
