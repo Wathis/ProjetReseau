@@ -22,7 +22,6 @@ struct Voiture {
 };
 
 #define NBR_MAX_PLACE 5
-#define SERVEUR_PORT 7777
 
 #include "CONFIG_SERVEUR.h"
 

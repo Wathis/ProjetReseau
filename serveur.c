@@ -6,7 +6,7 @@ int main (int argc, char *argv[]) {
 	int socketFd = socket(AF_INET, SOCK_STREAM,0);
 	struct sockaddr_in serveur;
 	serveur.sin_family = AF_INET;
-	serveur.sin_port = htons(SERVEUR_PORT);
+	serveur.sin_port = htons(atoi(argv[2]));
 	//On recupere l'addresse du serveur donnée en parametres
 	if (argc > 1) { 
 		//On stocke l'addresse du serveur
@@ -24,7 +24,7 @@ int main (int argc, char *argv[]) {
 	if (listen(socketFd,1) < 0 ) {
 		perror("Erreur dans le listen");
 	} else {
-		printf("Ecoute sur %d... \n",SERVEUR_PORT);
+		printf("[%s] Ecoute sur %d... \n",argv[1],atoi(argv[2]));
     }
 
 	struct sockaddr_in client;
@@ -93,7 +93,7 @@ int main (int argc, char *argv[]) {
 						}
 					}
 					//Si i == NBR_MAX_PLACE - 1 C'est que l'on a pas trouvé la voiture
-					if (i == NBR_MAX_PLACE) {
+					if (i == NBR_MAX_PLACE - 1) {
 						//On renvoie 'N' au client pour dire que on ne l'a pas trouvé
 						write(socketClient,"N",sizeof(char));
 					} else { //Sinon c'est qu'elle est bien dans le parking, on peut alors renvoyer les informations au client

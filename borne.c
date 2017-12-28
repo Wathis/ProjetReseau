@@ -44,8 +44,8 @@ int main (int argc, char *argv[]) {
 		// Connexion au serveur
 		struct sockaddr_in serveur;
 		serveur.sin_family = AF_INET;
-		serveur.sin_port = htons(7777);	
-		serveur.sin_addr.s_addr = inet_addr(SERVEURS_IP[i]);
+		serveur.sin_port = htons(atoi(SERVEURS[i + 1]));
+		serveur.sin_addr.s_addr = inet_addr(SERVEURS[i]);
 
 		int s = socket(AF_INET,SOCK_STREAM,0);
 		// Test de la validité de la socket
@@ -76,7 +76,7 @@ int main (int argc, char *argv[]) {
 						read(s,&prixHorsForfait,sizeof(float));
 						dureeSouhaiteeHeures = (float) dureeSouhaiteeMinutes / (float) 60;
 						printLines(45);
-						printf("[%s] a de la place pour la categorie %c.\n\tDuree max forfait : %f heure(s)\n\tPrix forfait : %f €\n\tPrix hors forfait : %f €\n",ipServeurReponse,categorie,dureeMaxForfait,prixForfait,prixHorsForfait);
+						printf("[%s] a de la place pour la categorie %c.\n\tDuree max forfait : %f heure(s)\n\tPrix forfait : %f € / H\n\tPrix hors forfait : %f € / H\n",ipServeurReponse,categorie,dureeMaxForfait,prixForfait,prixHorsForfait);
 						printf("\tLe prix sera de : \n\t\t%f € pour votre durée souhaitée \n", price(dureeMaxForfait, dureeSouhaiteeHeures, prixForfait, prixHorsForfait));
 						printf("\t\t%f € pour une heure de retard\n", price(dureeMaxForfait, dureeSouhaiteeHeures + 1, prixForfait, prixHorsForfait));
 						printf("\t\t%f € pour une durée double\n", price(dureeMaxForfait, dureeSouhaiteeHeures * (float) 2, prixForfait, prixHorsForfait));
@@ -101,8 +101,8 @@ int main (int argc, char *argv[]) {
 						read(s,&prixForfait,sizeof(float));
 						read(s,&prixHorsForfait,sizeof(float));
 
-						printf("[%s] Duree : %f, Duree max forfait : %f, Prix forfait : %f, Prix Hors Forfait : %f\n",ipServeurReponse,dureeVoitureHeures,dureeMaxForfait,prixForfait,prixHorsForfait);
-						printf("vous devez payer : %f\n", price(dureeMaxForfait, dureeVoitureHeures, prixForfait, prixHorsForfait));
+						printf("[%s] Detient la voiture : %s\n\tDuree en stationement : %f heure(s)\n\tDuree max forfait : %f heure(s)\n\tPrix forfait : %f € / H\n\tPrix Hors Forfait : %f € / H\n",ipServeurReponse,plaqueImmatriculation,dureeVoitureHeures,dureeMaxForfait,prixForfait,prixHorsForfait);
+						printf("\t[INFO] Vous devez payer : %f €\n", price(dureeMaxForfait, dureeVoitureHeures, prixForfait, prixHorsForfait));
 					}
 				}
 			}
