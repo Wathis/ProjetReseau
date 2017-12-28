@@ -38,7 +38,7 @@ int main (int argc, char *argv[]) {
 
 	char plaqueImmatriculation[8];
 	char categorie;
-	char menu;
+	int menu;
 	int duree ;
 	int socketClient;
 	float dureeMaxForfait;
@@ -53,9 +53,9 @@ int main (int argc, char *argv[]) {
 				printf("-------------------------------------\n");
 				printf("/!\\ Demande connexion client accepté\n");
 				printf("-------------------------------------\n");
-				read(socketClient,&menu,1);
+				read(socketClient,&menu,sizeof(int));
 				//Si menu == 1 c'est que la borne veut une proposition de contrat de stationnement pour une voiture donnée 
-				if (menu == '1') {
+				if (menu == 1) {
 					read(socketClient,&categorie,1);
 					read(socketClient,plaqueImmatriculation,8);
 					read(socketClient,&duree,sizeof(int));

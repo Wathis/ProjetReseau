@@ -43,10 +43,12 @@ int main (int argc, char *argv[]) {
 				scanf("%c", &repon);
 				
 			} while (repon != '1' &&  repon != '2');
-	
+
+			
+			int reponInteger = repon - '0';	
 
 			//On envoie au serveur si on veut payer ou voir les tarifs
-			write(s, &repon,1);
+			write(s, &reponInteger,sizeof(int));
 
 			char reponse;
 			struct sockaddr_in serveurReponse;
@@ -55,7 +57,7 @@ int main (int argc, char *argv[]) {
 			float prixForfait;
 			float prixHorsForfait;
 
-			if(repon == '1') {
+			if(reponInteger == 1) {
 				viderBuffer();
 				//On saisi les informations du client 
 				printf("catégorie : ");
@@ -109,6 +111,7 @@ int main (int argc, char *argv[]) {
 					read(s,&dureeMaxForfait, sizeof(float));
 					read(s,&prixForfait,sizeof(float));
 					read(s,&prixHorsForfait,sizeof(float));
+
 					if (dureeVoitureHeures - dureeMaxForfait < 0)
 					{
 						price = dureeVoitureHeures*prixForfait;
@@ -117,7 +120,7 @@ int main (int argc, char *argv[]) {
 					}
 
 					printf("[%s] Duree : %f, Duree max forfait : %f, Prix forfait : %f, Prix Hors Forfait : %f\n",ipServeurReponse,dureeVoitureHeures,dureeMaxForfait,prixForfait,prixHorsForfait);
-					printf("Vous devez payer : %f\n", price);
+					printf("Vous devez payer : %f €\n", price);
 				}
 			}
 		}
