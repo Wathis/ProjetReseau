@@ -30,25 +30,60 @@ int main (int argc, char *argv[]) {
 	if(repon == '1') {
 		viderBuffer();
 
-		//On saisi les informations du client 
-		printf("catégorie : ");
-		scanf("%c", &categorie);
-		printf("plaque d'immatriculation : ");
-		scanf("%s", plaqueImmatriculation);	
-		printf("duree : ");
-		scanf("%d", &duree);
+	//On saisi les informations du client 
+	printf("catégorie : ");
+	scanf("%c", &categorie);
+	printf("plaque d'immatriculation : ");
+	scanf("%s", plaqueImmatriculation);	
+	printf("duree : ");
+	scanf("%d", &duree);
 
-		printf("%s \n", plaqueImmatriculation);
-		printf("%c \n", categorie);
-		printf("%d \n", duree);
+	}
+	else {
 
-		if (s < 0) {
-			perror("Erreur de socket");
-		} else {
-			if (connect(s,(struct sockaddr*) &serveur,sizeof(serveur)) < 0) {
-				perror("Erreur de connexion");
-			}else {
-				printf("Connecté au serveur\n");
+	}
+	
+	
+	
+	
+
+	// strcpy(plaqueImmatriculation,"AAABBCC\0");
+	// categorie = 'B';
+	// duree = 2;
+	
+
+	printf("%s \n", plaqueImmatriculation);
+	printf("%c \n", categorie);
+	printf("%d \n", duree);
+	// test de la validité de la socket
+	if (s < 0) {
+		perror("Erreur de socket");
+	} else {
+		// connection au serveur
+		if (connect(s,(struct sockaddr*) &serveur,sizeof(serveur)) < 0) {
+			perror("Erreur de connexion");
+		}else {
+			printf("Connecté au serveur\n");
+
+			do {
+				printf("1 pour tarif\n2 pour payer\n");
+				scanf("%c", &repon);
+			} while (repon != '1' &&  repon != '2');
+	
+			if(repon == '1') {
+				viderBuffer();
+
+				//On saisi les informations du client 
+				printf("catégorie : ");
+				scanf("%c", &categorie);
+				printf("plaque d'immatriculation : ");
+				scanf("%s", plaqueImmatriculation);	
+				printf("duree : ");
+				scanf("%d", &duree);
+
+
+				//On envoie au serveur si on veut payer ou voir les tarifs
+				//write(s, &repon);
 				//On envoie les données saisies par l'utilisateur au serveur
 				write(s,&categorie,1);
 				//On met le dernier caratere \0 dans la chaine pour qu'il soit bien interprété
@@ -75,13 +110,16 @@ int main (int argc, char *argv[]) {
 				} else { // Sinon il repond par "N" 	
 					printf("Ce serveur ne peut pas accueillir la voiture");
 				}
-			}
-		}
-		close(s);
-		}
-	else {
 
+			}
+			else {
+
+			}
+
+
+
+			
+		}
 	}
-	
-	
+	close(s);
 }
