@@ -31,13 +31,13 @@ int main (int argc, char *argv[]) {
 
 	//On boucle sur tous les serveurs existants pour tous les interroger
 	for (int i = 0 ; i < NB_SERVEURS; i++) {
-		//On créé un nouveau processus pour chaque serveur pour les interroger simultanement
+		// //On créé un nouveau processus pour chaque serveur pour les interroger simultanement
 		if (fork() == 0) {
 			// On stock l'addresse du serveur a tester configuré dans CONFIG_SERVEUR.h
 			struct sockaddr_in serveur;
 			serveur.sin_family = AF_INET;
-			serveur.sin_port = htons(atoi(SERVEURS[i + 1]));
-			serveur.sin_addr.s_addr = inet_addr(SERVEURS[i]);
+			serveur.sin_port = htons(atoi(SERVEURS[i * 2 + 1]));
+			serveur.sin_addr.s_addr = inet_addr(SERVEURS[i * 2]);
 
 			//On créé la socket du serveur
 			int socketServeur = socket(AF_INET,SOCK_STREAM,0);
