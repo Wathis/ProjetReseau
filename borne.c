@@ -44,10 +44,12 @@ int main (int argc, char *argv[]) {
 			// Test de la validité de la socket
 			if (socketServeur < 0) {
 				perror("Erreur de socket");
+				exit(0);
 			} else {
 				//On se connecte la socket du serveur a l'addresse correspondante
 				if (connect(socketServeur,(struct sockaddr*) &serveur,sizeof(serveur)) < 0) {
 					perror("Erreur de connexion");
+					exit(0);
 				} else {
 					//On envoie au serveur si on veut payer ou voir les tarifs ( Choix du protocole )
 					write(socketServeur, &choixMenu,sizeof(int));
@@ -63,6 +65,9 @@ int main (int argc, char *argv[]) {
 			exit(0);
 		}
 	}
+	//On attend tous les fils avant de terminer le processus parent
+	while (wait(NULL) > 0);
+	return 0;
 }
 
 void premierProtocole(int socketServeur,char ipServeur[],char plaqueImmatriculation[],float dureeSouhaiteeHeures,char categorie) {
