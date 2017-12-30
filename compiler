@@ -1,0 +1,7 @@
+echo "Compilation ..."
+gcc serveur.c -o serveur
+gcc borne.c -o borne
+echo "Terminé."
+echo "Exemple utilisation du serveur :  ./serveur 192.168.0.10 7777"
+echo "Exemple utilisation de la borne : ./borne"
+
