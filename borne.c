@@ -13,7 +13,7 @@ int main (int argc, char *argv[]) {
 	//Dans les deux protocoles il faut la plaque, on la demande donc avant
 	printf("Plaque d'immatriculation : ");
 	scanf("%s", plaqueImmatriculation);	
-	//On met le dernier caratere \0 dans la chaine pour qu'il soit bien interprété
+	//On met le dernier caratere \0 dans la chaine pour être sûr qu'il soit bien interprété
 	plaqueImmatriculation[7] = '\0';
 	viderBuffer();
 
