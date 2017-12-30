@@ -108,8 +108,8 @@ void premierProtocole(int socketClient,struct sockaddr_in serveur) {
 		if (nbPlacesLibresParCategories[categorie - 'A'] > 0) {
 			// "O" permet de dire que oui on a de la place
 			write(socketClient,"O",1);
-			// On donne le nom du serveur au client ( son addresse au format integer ) 
-			write(socketClient,&serveur.sin_addr,sizeof(serveur.sin_addr));
+			// On donne le nom du serveur au client ( son addresse au format integer : Voir document d'explication du protocole ) 
+			write(socketClient,&serveur.sin_addr.s_addr,4);
 			//On fait la suite du protocole en envoyant les données correspondantes dans l'ordre
 			write(socketClient,&dureeMaxForfait,sizeof(float));
 			write(socketClient,&prixForfait,sizeof(float));

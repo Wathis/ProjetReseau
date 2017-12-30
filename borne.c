@@ -86,7 +86,7 @@ void premierProtocole(int socketServeur,char ipServeur[],char plaqueImmatriculat
 	//Si le serveur repond par "O", c'est qu'il peut accueillir la voiture
 	if (reponse == 'O') {
 		//On lis le nom du serveur ( son addresse )
-		read(socketServeur,&serveurReponse.sin_addr,sizeof(serveurReponse.sin_addr));
+		read(socketServeur,&serveurReponse.sin_addr.s_addr,4);
 		// On convertit son nom ( de integerer à String pour qu'il soit comprehensible par l'utilisateur )
 		ipServeurReponse = inet_ntoa(serveurReponse.sin_addr);
 		//On fais la suite du protocole
@@ -120,8 +120,8 @@ void deuxiemeProtocole(int socketServeur,char ipServeur[],char plaqueImmatricula
 	char detientVoiture;
 	read(socketServeur,&detientVoiture,sizeof(char));
 	if (detientVoiture == 'O') {
-		//On lis le nom du serveur ( son addresse )
-		read(socketServeur,&serveurReponse.sin_addr,sizeof(serveurReponse.sin_addr));
+		//On lis le nom du serveur ( son addresse format integer )
+		read(socketServeur,&serveurReponse.sin_addr.s_addr,4);
 		// On convertit son nom ( de integerer à String pour qu'il soit comprehensible par l'utilisateur )
 		ipServeurReponse = inet_ntoa(serveurReponse.sin_addr);
 		//On fait la suite du protocole
